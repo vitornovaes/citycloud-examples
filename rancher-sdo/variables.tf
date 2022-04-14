@@ -4,7 +4,7 @@
 ##################################
 
 variable "prefix" {
-  default = "example-rancher"
+  default = "rancher-sdo"
 }
 
 variable "n_of_masters" {
@@ -24,7 +24,7 @@ variable "cidr" {
 }
 
 variable "ssh_key" {
-  default = "~/.ssh/id_rsa"
+  default = "~/.ssh/id_rsa_PEM"
 }
 
 variable "k8s_dashboard_version" {

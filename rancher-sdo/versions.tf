@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     openstack = {
-      source = "terraform-providers/openstack"
+      source = "terraform-provider-openstack/openstack"
     }
     template = {
       source = "hashicorp/template"

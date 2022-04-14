@@ -9,9 +9,13 @@ runcmd:
   - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   - apt-get update
 # Installs current Docker supported version for RKE cluster
-  - apt-get install -y docker-ce=5:19.03.11~3-0~ubuntu-focal docker-ce-cli=5:19.03.11~3-0~ubuntu-focal containerd.io
+  - apt-get install -y docker-ce docker-ce-cli containerd.io
+  - groupadd docker
+  - echo -e "ubuntu\nubuntu" | passwd ubuntu  
   - usermod -aG docker $USER
   - newgrp docker
   - systemctl enable docker
   - chmod 666 /var/run/docker.sock
+  - chown ubuntu /var/run/docker.sock
+  - sysctl -w net.bridge.bridge-nf-call-iptables=1  
   - docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --privileged rancher/rancher:latest

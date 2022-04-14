@@ -53,11 +53,13 @@ resource "openstack_compute_floatingip_associate_v2" "master-fip-assoc" {
   count = var.n_of_masters
   floating_ip = element(openstack_compute_floatingip_v2.master-fip.*.address,count.index+1)
   instance_id = element(openstack_compute_instance_v2.master.*.id,count.index+1)
+  fixed_ip    = element(openstack_compute_instance_v2.master.*.fixed_ip_v4,count.index+1)
 }
 
 resource "openstack_compute_floatingip_associate_v2" "worker-fip-assoc" {
   count = var.n_of_workers
   floating_ip = element(openstack_compute_floatingip_v2.worker-fip.*.address,count.index+1)
   instance_id = element(openstack_compute_instance_v2.worker.*.id,count.index+1)
+  fixed_ip    = element(openstack_compute_instance_v2.worker.*.fixed_ip_v4,count.index+1)
 }
 

@@ -26,7 +26,7 @@ resource "rke_cluster" "cluster" {
 
   addons_include = [
     "https://raw.githubusercontent.com/kubernetes/dashboard/v${var.k8s_dashboard_version}/aio/deploy/recommended.yaml",
-    #"https://gist.githubusercontent.com/superseb/499f2caa2637c404af41cfb7e5f4a938/raw/930841ac00653fdff8beca61dab9a20bb8983782/k8s-dashboard-user.yml",
+    "https://gist.githubusercontent.com/superseb/499f2caa2637c404af41cfb7e5f4a938/raw/930841ac00653fdff8beca61dab9a20bb8983782/k8s-dashboard-user.yml",
   ]
 
   # Initialize Helm (Install Tiller)
@@ -35,11 +35,21 @@ resource "rke_cluster" "cluster" {
   depends_on = [null_resource.wait-for-docker]
 }
 
-resource "local_file" "kube_cluster_yaml" {
-  filename = "./kube_config_cluster.yml"
-  sensitive_content = rke_cluster.cluster.kube_config_yaml
+provider "kubernetes" {
+  host     = rke_cluster.cluster.api_server_url
+  username = rke_cluster.cluster.kube_admin_user
+
+  client_certificate     = rke_cluster.cluster.client_cert
+  client_key             = rke_cluster.cluster.client_key
+  cluster_ca_certificate = rke_cluster.cluster.ca_crt
+  # load_config_file = false
 }
 
+resource "kubernetes_namespace" "rancher-sdo" {
+  metadata {
+    name = "terraform-rancher-sdo-namespace"
+  }
+}
 resource "null_resource" "wait-for-docker" {
   provisioner "local-exec" {
     command = "sleep 180"
